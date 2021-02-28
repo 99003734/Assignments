@@ -1,0 +1,25 @@
+#include <stdio.h> 
+#include <stdlib.h> 
+#include <string.h>
+#include <sys/mman.h> 
+#include <fcntl.h> 
+#include <sys/shm.h> 
+#include <sys/stat.h> 
+ 
+int main() 
+{ 
+ const int Size = 4096; 
+ const char* Name = "OS"; 
+ const char* msg1 = "Hello"; 
+ const char* msg2 = "World"; 
+ int shm_file_dr; 
+ void* ptr; 
+ shm_file_dr = shm_open(Name, O_CREAT | O_RDWR, 0666); 
+ ftruncate(shm_file_dr, Size); 
+ ptr = mmap(0, Size, PROT_WRITE, MAP_SHARED, shm_file_dr, 0); 
+ sprintf(ptr, "%s", msg1); 
+ ptr += strlen(msg1); 
+ sprintf(ptr, "%s", msg2); 
+ ptr += strlen(msg2); 
+ return 0; 
+}
